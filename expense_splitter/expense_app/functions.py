@@ -24,12 +24,27 @@ def get_settle(settlements:list,net_balance:dict)->dict:
         receiver = d['paid_to']
 
         net_balance[payer] = net_balance.get(payer,0)+amount
-        net_balance[receiver] = new_balance.get(receiver,0)-amount
+        net_balance[receiver] = net_balance.get(receiver,0)-amount
 
 
                
     return net_balance
-    
+
+def get_receivers_and_payers(final_net_balance:dict):
+    receivers = []
+    payers = []
+
+    for key,value in final_net_balance.items():
+        if value>0:
+            pair = (key,value)
+            receivers.append(pair)
+        elif value<0:
+            pair = (key,value)
+            payers.append(pair)
+
+    return receivers,payers
+       
+
 
 payments = [
     {"expense_id": 1, "user": "tina", "amount_paid": 6000},
@@ -46,11 +61,14 @@ print("balance before settlement ",net_balance )
 
 
 settlements = [
-    {"paid_by": "tanvi", "paid_to": "tina", "amount_paid": 3000},
+    {"paid_by": "tanvi", "paid_to": "tina", "amount_paid": 30},
     {"paid_by":"kumkum","paid_to":"muskan","amount_paid":5000},
     {"paid_by":"muskan","paid_to":"kumkum","amount_paid":5000},
-    {"paid_by":"muskan","paid_to":"kumkum","amount_paid":2100},
-    {"paid_by":"muskan","paid_to":"kumkum","amount_paid":900}
+
 ]
 new_balance= get_settle(settlements,net_balance)
 print("balance after settlement", new_balance)
+
+
+receivers,payers = get_receivers_and_payers(new_balance)
+print(f"receivers - {receivers} , and payers = {payers}")
